@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Chat</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      height: 100vh;
+    }
+
+    h2 {
+      margin: 20px 0;
+      color: #333;
+    }
+
+    #chat-box {
+      width: 80%;
+      max-width: 700px;
+      height: 70vh;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background: white;
+      padding: 10px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .message {
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 8px;
+      max-width: 70%;
+    }
+
+    .user {
+      background: #007bff;
+      color: white;
+      align-self: flex-end;
+    }
+
+    .assistant {
+      background: #e4e6eb;
+      color: black;
+      align-self: flex-start;
+    }
+
+    #input-area {
+      margin-top: 15px;
+      display: flex;
+      gap: 10px;
+      width: 80%;
+      max-width: 700px;
+    }
+
+    #message {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    #send-btn {
+      padding: 10px 20px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    #send-btn:hover {
+      background: #218838;
+    }
+
+    #conversation-id {
+      margin-bottom: 15px;
+      padding: 8px;
+      width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h2>ChatBOT</h2>
+
+  <input id="conversation-id" type="text" placeholder="Enter Conversation ID (any string)" />
+
+  <div id="chat-box"></div>
+
+  <div id="input-area">
+    <input id="message" type="text" placeholder="Type your message..." />
+    <button id="send-btn">Send</button>
+  </div>
+
+<script>
+  const API_URL = "http://127.0.0.1:8000/chat/"; // Backend endpoint
+
+  const chatBox = document.getElementById("chat-box");
+  const messageInput = document.getElementById("message");
+  const sendBtn = document.getElementById("send-btn");
+  const conversationIdInput = document.getElementById("conversation-id");
+
+  function appendMessage(role, content, typewriter = false) {
+    const msgDiv = document.createElement("div");
+    msgDiv.classList.add("message", role);
+    chatBox.appendChild(msgDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    if (typewriter) {
+      let i = 0;
+      const speed = 30; // typing speed in ms
+      function typeWriter() {
+        if (i < content.length) {
+          msgDiv.textContent += content.charAt(i);
+          i++;
+          chatBox.scrollTop = chatBox.scrollHeight; // keep scrolling
+          setTimeout(typeWriter, speed);
+        }
+      }
+      typeWriter();
+    } else {
+      msgDiv.textContent = content;
+    }
+  }
+
+  async function sendMessage() {
+    const message = messageInput.value.trim();
+    const conversationId = conversationIdInput.value.trim();
+
+    if (!message || !conversationId) {
+      alert("Please enter both message and conversation ID.");
+      return;
+    }
+
+    // Append user message
+    appendMessage("user", message);
+    messageInput.value = "";
+
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: message,
+          role: "user",
+          conversation_id: conversationId
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to send message");
+      }
+
+      const data = await response.json();
+
+      // Assistant message with typewriter effect
+      appendMessage("assistant", data.response, true);
+
+    } catch (err) {
+      appendMessage("assistant", "⚠️ Error: " + err.message);
+    }
+  }
+
+  sendBtn.addEventListener("click", sendMessage);
+  messageInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") sendMessage();
+  });
+</script>
+</body>
+</html>
