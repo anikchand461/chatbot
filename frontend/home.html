@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Chat</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
@@ -13,6 +14,8 @@
     align-items: center;
     margin: 0;
     height: 100vh;
+    padding: 0;
+    justify-content: center;
   }
 
   h2 {
@@ -127,6 +130,24 @@
       font-size: 18px;  /* bigger text for touch */
       padding: 12px;
     }
+    #chat-container {
+      max-width: 100%;
+      border-radius: 0;   /* removes extra borders on small screens */
+    }
+
+    #chat-box {
+      font-size: 18px;    /* bigger text for mobile */
+    }
+
+    input[type="text"] {
+      font-size: 18px;
+      padding: 12px;
+    }
+
+    button {
+      font-size: 18px;
+      padding: 12px 18px;
+    }
   }
 
   /* Mobile optimization */
@@ -141,7 +162,8 @@
     }
 
     #chat-box {
-      padding: 14px;
+      padding-right: 12px;
+      padding-left: 14px;
       min-height: 70vh; /* keeps box taller on phones */
     }
 
