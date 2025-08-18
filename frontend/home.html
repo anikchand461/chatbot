@@ -35,19 +35,6 @@
     display: block;
   }
 
-  #chat-box {
-    flex: 1;
-    width: 100%;
-    max-width: 650px;
-    border-radius: 12px;
-    background: white;
-    padding: 15px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
-  }
-
   .message {
     margin: 10px 0;
     padding: 14px 18px;
@@ -58,17 +45,43 @@
     word-wrap: break-word;
   }
 
-  .user {
-    background: linear-gradient(135deg, #4a90e2, #357ABD);
-    color: white;
-    align-self: flex-end;
-  }
+/* Gradient animated background for chat */
+#chat-box {
+  flex: 1;
+  width: 100%;
+  max-width: 650px;
+  border-radius: 12px;
+  background: linear-gradient(-45deg, #fdfbfb, #ebedee, #dfe9f3, #ffffff);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  padding: 18px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
+}
 
-  .assistant {
-    background: #f1f3f6;
-    color: #222;
-    align-self: flex-start;
-  }
+/* Smooth gradient animation */
+@keyframes gradientBG {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Messages */
+.assistant {
+  background: rgba(255, 255, 255, 0.8); /* semi-transparent for gradient effect */
+  color: #222;
+  align-self: flex-start;
+  margin-left: 4px; /* fixes left padding issue */
+}
+
+.user {
+  background: linear-gradient(135deg, #4a90e2, #357ABD);
+  color: white;
+  align-self: flex-end;
+  margin-right: 4px; /* keep symmetry */
+}
 
   #input-area {
     display: flex;
@@ -128,7 +141,7 @@
     }
 
     #chat-box {
-      padding: 12px;
+      padding: 14px;
       min-height: 70vh; /* keeps box taller on phones */
     }
 
@@ -146,6 +159,9 @@
     #send-btn {
       font-size: 17px;
       padding: 12px 16px;
+    }
+    .assistant, .user {
+      max-width: 92%; /* keep bubbles comfy */
     }
   }
 </style>
